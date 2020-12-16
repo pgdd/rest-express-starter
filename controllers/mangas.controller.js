@@ -1,32 +1,43 @@
 const Mangas = require("../models/Mangas")
 
-const create = async (req, res, next) => {
+const create = (req, res, next) => {
     console.log(req.body)
-    let everythingWentWell = false;
-    everythingWentWell = await Mangas.save(req.body)
-    if(everythingWentWell) {
-        console.log("EVERYTHING WENT WELL")
+    try {
+        let manga = Mangas.save(req.body)
+        // console.log("in controller")
+        console.log("in controller", manga)
         res.status(200).json("everything went well")
-    } else {
+    }
+    catch (err) {
         let message = `A ${req.method} Request Has been made, with this data in BODY ${JSON.stringify(req.body)}, unfortunatey we could not save`
         console.log(message);
         res.status(500).json(message);
     }
-
 }
 
-const show = (req, res, next) => {
+const show = async (req, res, next) => {
     const { id } = req.params
-    let message = `A GET request for ressource MANGAS has been made, with ID in Params ${id}`
-    res.json(message)
+    try {
+        let manga = await Mangas.findById(id)
+        console.log("in controller", manga)
+        res.status(200).json(manga)
+        
+    }  catch (err) {
+        let message = `A GET request for ressource MANGAS has been made, with ID in Params ${id}`
+        res.status(404).json(message)
+    }
+
 }
 
-const index = (req, res, next) => {
-    let message = `A GET request for resource MANGAS has been made. Unfortunately database is not connected yet, so please come back later`
-    console.log(message);
-
-    // TODO: connect toi a la base,va chercher les mangas, mets le resultat dans une variable, et res.json cette variable.
-    res.json(message)
+const index = async (req, res, next) => {
+    try {
+        let mangas = await Mangas.findAll()
+        res.status(200).json(mangas)
+    } catch(err) {
+        let message = `A GET request for resource MANGAS has been made. Unfortunately database is not connected yet, so please come back later`
+        console.log(message);
+        res.status(404).json(message + " " + err)
+    }
 }
 
 const update = (req, res, next) => {
