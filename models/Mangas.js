@@ -1,18 +1,12 @@
 const db = require("../dbConnect")
 
-
-
 const save = async (data) => {
-    // connect toi & do a query
-    console.log(data)
-    console.log(" I am going to save, from MODEL Mangas")
 
     let sql = `INSERT INTO mangas SET ? `
-
     try {
         let results = await db.promise().query(sql, [{...data}])
-        console.log("in model", results)
         return results
+        // results.insertId
     } catch (err) {
         console.log(err)
         throw new Error(err)
@@ -26,7 +20,6 @@ const findById = async (id) => {
     try {
         let query = 'SELECT * FROM mangas WHERE ID = ?';
         let [ results, fields ] = await db.promise().query(query, [id])
-        console.log("In find by id", results[0], fields)
         return results[0]  
     }
     catch (err) {
@@ -47,12 +40,27 @@ const findAll = async () => {
 
 }
 
-const udpateById = (id) => {
-
+const udpateById = async (id, data) => {
+    console.log(typeof id)
+    let sql = 'UPDATE `mangas` SET ? WHERE ?'
+    try {
+        let [results, fields] = await db.promise().query(sql, [{...data}, {id}])
+        return results.affectedRows
+    } catch (err) {
+        throw new Error(err)
+    }   
 }
 
-const deleteById = (id) => {
-
+const deleteById = async (id) => {
+    try {
+        let sql = 'DELETE from mangas WHERE id = ?'
+        let [ results, fields ] = await db.promise().query(sql, [id])
+        return results.affectedRows
+    }
+    catch (err) {
+        throw new Error(err)
+    }
+    
 }
 
 module.exports = {

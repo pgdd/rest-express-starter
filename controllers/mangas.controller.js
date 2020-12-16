@@ -40,18 +40,32 @@ const index = async (req, res, next) => {
     }
 }
 
-const update = (req, res, next) => {
-    console.log(req.body)
-    console.log(req.params.id)
-    let message = `A PUT request for ressource MANGAS has been made, with ID in Params ${req.params.id}, with data in body ${JSON.stringify(req.body)}`
-    res.json(message)
+const update = async (req, res, next) => {
+    const id = req.params.id
+    const data = req.body
+
+    try {
+        let manga = await Mangas.udpateById(parseInt(id), data)
+        res.status(200).json(manga)
+
+    } catch(err) {
+        let message = `A PUT request for ressource MANGAS has been made, with ID in Params ${req.params.id}, with data in body ${JSON.stringify(req.body)}`
+        res.status(500).json(message)
+    }
 }
 
-const destroy = (req, res, next) => {
-    const { id } = req.params;
-    let message = `A DELETE request for ressource MANGAS has been made, with ID in Params ${id}`
-    console.log(message)
-    res.json(message)
+const destroy = async (req, res, next) => {
+    const { id } = req.params
+    try {
+        let manga = await Mangas.deleteById(id)
+        res.status(200).json(manga)
+
+    } catch(err) {
+        let message = `A PUT request for ressource MANGAS has been made, with ID in Params ${req.params.id}, with data in body ${JSON.stringify(req.body)}`
+
+        console.log(message)
+        res.status(500).json(message)
+    }
 }
 
 const name = 'Dude'
