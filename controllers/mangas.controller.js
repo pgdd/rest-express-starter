@@ -24,8 +24,23 @@ const show = async (req, res, next) => {
 }
 
 const index = async (req, res, next) => {
+    if(req.params.author_id) {
+        return next()
+    }
     try {
         let mangas = await Mangas.findAll()
+        res.status(200).json(mangas)
+    } catch (err) {
+        let message = `A GET request for resource MANGAS has been made. Unfortunately database is not connected yet, so please come back later. Unfortunately ${err}`
+        res.status(404).json(message + " " + err)
+    }
+}
+
+const indexByAuthor = async (req, res, next) => {
+    console.log("Now index by author !")
+    const { author_id } = req.params
+    try {
+        let mangas = await Mangas.findAllByAuthorId(author_id)
         res.status(200).json(mangas)
     } catch (err) {
         let message = `A GET request for resource MANGAS has been made. Unfortunately database is not connected yet, so please come back later. Unfortunately ${err}`
@@ -62,6 +77,7 @@ module.exports = {
     create,
     show,
     index,
+    indexByAuthor,
     update,
     destroy
 }

@@ -31,6 +31,16 @@ const findAll = async () => {
     }
 }
 
+const findAllByAuthorId = async (author_id) => {
+    let sql = 'SELECT * FROM `mangas` WHERE author_id = ?'
+    try {
+        let [ results, fields ] = await db.promise().query(sql, [author_id]) 
+        return results;
+    } catch (error) {
+        throw new Error(err)
+    }
+}
+
 const udpateById = async (id, data) => {
     let sql = 'UPDATE `mangas` SET ? WHERE ?'
     try {
@@ -56,6 +66,7 @@ module.exports = {
     save,
     findById,
     findAll,
+    findAllByAuthorId,
     udpateById,
     deleteById
 }
